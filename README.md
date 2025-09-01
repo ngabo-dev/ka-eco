@@ -45,7 +45,7 @@ This system provides:
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone <https://github.com/ngabo-dev/ka-eco.git>
 cd ka-eco-urban-wetlands
 ```
 
@@ -473,7 +473,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- Original design from Figma: https://www.figma.com/design/3tcpgqFcfQErKefRR5HZRe/Ka-Eco-Urban-Wetlands-Monitoring-System
 - Built with React, FastAPI, and modern web technologies
 - Community contributions and environmental monitoring initiatives
 
