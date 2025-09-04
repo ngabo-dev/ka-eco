@@ -44,7 +44,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [sessionTimeout, setSessionTimeout] = useState<NodeJS.Timeout | null>(null);
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   // Session timeout: 30 minutes of inactivity
   const SESSION_TIMEOUT = 30 * 60 * 1000; // 30 minutes in milliseconds
@@ -54,12 +53,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     if (sessionTimeout) {
       clearTimeout(sessionTimeout);
     }
-    if (user && token && !isLoggingOut) {
+    if (user && token) {
       const timeout = setTimeout(() => {
-        if (!isLoggingOut) {
-          logout();
-          toast.error('Session expired due to inactivity. Please log in again.');
-        }
+        logout();
+        toast.error('Session expired due to inactivity. Please log in again.');
       }, SESSION_TIMEOUT);
       setSessionTimeout(timeout);
     }
@@ -118,9 +115,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
               localStorage.setItem('user_data', JSON.stringify(response.data));
             } else {
               // Token is invalid, clear it
-              if (!isLoggingOut) {
-                logout();
-              }
+              logout();
             }
             setLoading(false);
           });
@@ -133,9 +128,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             localStorage.setItem('user_data', JSON.stringify(response.data));
           } else {
             // Token is invalid, clear it
-            if (!isLoggingOut) {
-              logout();
-            }
+            logout();
           }
           setLoading(false);
         });
@@ -204,6 +197,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         // Show success message from backend
         const message = response.data.message || 'Account created successfully! You can now log in.';
         toast.success(message);
+        
+        // Auto-login after successful registration
+        try {
+          await login(username, password);
+        } catch (loginError) {
+          // If auto-login fails, at least show that registration was successful
+          toast.info('Registration successful! Please log in with your credentials.');
+        }
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Registration failed';
@@ -260,13 +261,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const logout = async () => {
-    // Prevent multiple logout calls
-    if (isLoggingOut) {
-      return;
-    }
-
-    setIsLoggingOut(true);
-
     try {
       // Call logout endpoint
       await apiService.logout();
@@ -297,7 +291,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     updateProfile,
     logout,
     loading,
-    isLoggingOut,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

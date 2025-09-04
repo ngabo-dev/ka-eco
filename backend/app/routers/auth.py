@@ -281,6 +281,12 @@ def delete_user(user_id: int, current_user: schemas.User = Depends(get_current_u
     db.commit()
     return {"message": "User deleted"}
 
+@router.post("/logout")
+def logout(current_user: schemas.User = Depends(get_current_user)):
+    # In a stateless JWT system, logout is handled client-side
+    # The client should remove tokens from storage
+    return {"message": "Successfully logged out"}
+
 @router.post("/change-password")
 def change_password(password_data: schemas.PasswordChange, current_user: schemas.User = Depends(get_current_user), db: Session = Depends(get_db)):
     if not verify_password(password_data.current_password, current_user.hashed_password):

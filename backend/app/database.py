@@ -3,12 +3,10 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import os
 
-# Database configuration - MySQL with XAMPP
-SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:@localhost:3306/ka-eco"
+# Database configuration - MySQL (XAMPP)
+SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root@localhost/ka-eco"
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL,
-    pool_pre_ping=True,
-    pool_recycle=300,
     echo=True  # Set to False in production
 )
 

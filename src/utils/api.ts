@@ -3,6 +3,7 @@ const API_BASE_URL = 'http://localhost:8000';
 export interface ApiResponse<T> {
   data?: T;
   error?: string;
+  message?: string;
 }
 
 export interface TokenResponse {
@@ -164,8 +165,8 @@ class ApiService {
       }
 
       if (!response.ok) {
-        const errorMessage = data?.detail || data?.message || `HTTP error! status: ${response.status}`;
-        return { error: errorMessage };
+          const errorMessage = data?.detail || data?.message || `HTTP error! status: ${response.status}`;
+          return { error: errorMessage, message: data?.message };
       }
 
       // If login successful, store tokens
@@ -173,7 +174,7 @@ class ApiService {
         this.setTokens(data.access_token, data.refresh_token);
       }
 
-      return { data };
+        return { data, message: data?.message };
     } catch (error) {
       console.error('Login request failed:', error);
       return { error: error instanceof Error ? error.message : 'Login failed' };
@@ -194,10 +195,25 @@ class ApiService {
       phone: userData.phone?.trim() || null
     };
 
-    return this.request('/auth/register', {
-      method: 'POST',
-      body: JSON.stringify(sanitizedData),
-    });
+      try {
+        const url = `${this.baseURL}/auth/register`;
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(sanitizedData),
+        });
+        const data = await response.json();
+        if (!response.ok) {
+          const errorMessage = data?.detail || data?.message || `HTTP error! status: ${response.status}`;
+          return { error: errorMessage, message: data?.message };
+        }
+        return { data, message: data?.message };
+      } catch (error) {
+        console.error('Registration request failed:', error);
+        return { error: error instanceof Error ? error.message : 'Registration failed' };
+      }
   }
 
   async getCurrentUser(): Promise<ApiResponse<any>> {
@@ -377,190 +393,6 @@ class ApiService {
     return this.request('/auth/logout', {
       method: 'POST',
     });
-  }
-
-  // Alerts endpoints
-  async getAlerts(skip?: number, limit?: number, alertType?: string, severity?: string, isActive?: boolean): Promise<ApiResponse<any[]>> {
-    const params = new URLSearchParams();
-    if (skip !== undefined) params.append('skip', skip.toString());
-    if (limit !== undefined) params.append('limit', limit.toString());
-    if (alertType) params.append('alert_type', alertType);
-    if (severity) params.append('severity', severity);
-    if (isActive !== undefined) params.append('is_active', isActive.toString());
-
-    return this.request(`/alerts?${params.toString()}`);
-  }
-
-  async getAlert(alertId: number): Promise<ApiResponse<any>> {
-    return this.request(`/alerts/${alertId}`);
-  }
-
-  async createAlert(alertData: any): Promise<ApiResponse<any>> {
-    return this.request('/alerts', {
-      method: 'POST',
-      body: JSON.stringify(alertData),
-    });
-  }
-
-  async acknowledgeAlert(alertId: number): Promise<ApiResponse<any>> {
-    return this.request(`/alerts/${alertId}/acknowledge`, {
-      method: 'PUT',
-    });
-  }
-
-  async resolveAlert(alertId: number): Promise<ApiResponse<any>> {
-    return this.request(`/alerts/${alertId}/resolve`, {
-      method: 'PUT',
-    });
-  }
-
-  async getAlertsSummary(): Promise<ApiResponse<any>> {
-    return this.request('/alerts/stats/summary');
-  }
-
-  async checkThresholds(): Promise<ApiResponse<any>> {
-    return this.request('/alerts/check-thresholds', {
-      method: 'POST',
-    });
-  }
-
-  // Notifications endpoints
-  async getNotifications(skip?: number, limit?: number, isRead?: boolean): Promise<ApiResponse<any[]>> {
-    const params = new URLSearchParams();
-    if (skip !== undefined) params.append('skip', skip.toString());
-    if (limit !== undefined) params.append('limit', limit.toString());
-    if (isRead !== undefined) params.append('is_read', isRead.toString());
-
-    return this.request(`/alerts/notifications?${params.toString()}`);
-  }
-
-  async markNotificationRead(notificationId: number): Promise<ApiResponse<any>> {
-    return this.request(`/alerts/notifications/${notificationId}/read`, {
-      method: 'PUT',
-    });
-  }
-
-  // Settings endpoints
-  async getUserSettings(): Promise<ApiResponse<any[]>> {
-    return this.request('/settings/user');
-  }
-
-  async getUserSetting(key: string): Promise<ApiResponse<any>> {
-    return this.request(`/settings/user/${key}`);
-  }
-
-  async createOrUpdateSetting(settingData: {key: string, value: any}): Promise<ApiResponse<any>> {
-    return this.request('/settings/user', {
-      method: 'POST',
-      body: JSON.stringify(settingData),
-    });
-  }
-
-  async bulkUpdateSettings(settings: {key: string, value: any}[]): Promise<ApiResponse<any>> {
-    return this.request('/settings/user/bulk', {
-      method: 'PUT',
-      body: JSON.stringify(settings),
-    });
-  }
-
-  async deleteUserSetting(key: string): Promise<ApiResponse<any>> {
-    return this.request(`/settings/user/${key}`, {
-      method: 'DELETE',
-    });
-  }
-
-  async exportUserData(): Promise<ApiResponse<any>> {
-    return this.request('/settings/export');
-  }
-
-  // Community reports endpoints
-  async getCommunityReports(skip?: number, limit?: number, reportType?: string, status?: string): Promise<ApiResponse<any[]>> {
-    const params = new URLSearchParams();
-    if (skip !== undefined) params.append('skip', skip.toString());
-    if (limit !== undefined) params.append('limit', limit.toString());
-    if (reportType) params.append('report_type', reportType);
-    if (status) params.append('status', status);
-
-    return this.request(`/community?${params.toString()}`);
-  }
-
-  async getCommunityReport(reportId: number): Promise<ApiResponse<any>> {
-    return this.request(`/community/${reportId}`);
-  }
-
-  async createCommunityReport(reportData: FormData): Promise<ApiResponse<any>> {
-    // For FormData, we need to make a direct request
-    try {
-      const url = `${this.baseURL}/community/`;
-      const config: RequestInit = {
-        method: 'POST',
-        body: reportData,
-      };
-
-      // Add authorization header for FormData request
-      if (this.accessToken) {
-        config.headers = {
-          'Authorization': `Bearer ${this.accessToken}`,
-        };
-      }
-
-      const response = await fetch(url, config);
-
-      let data;
-      const contentType = response.headers.get('content-type');
-
-      if (contentType && contentType.includes('application/json')) {
-        data = await response.json();
-      } else {
-        const text = await response.text();
-        data = { message: text };
-      }
-
-      if (!response.ok) {
-        const errorMessage = data?.detail || data?.message || `HTTP error! status: ${response.status}`;
-        return { error: errorMessage };
-      }
-
-      return { data };
-    } catch (error) {
-      console.error('Community report creation failed:', error);
-      return { error: error instanceof Error ? error.message : 'Failed to create report' };
-    }
-  }
-
-  async updateCommunityReport(reportId: number, reportData: any): Promise<ApiResponse<any>> {
-    return this.request(`/community/${reportId}`, {
-      method: 'PUT',
-      body: JSON.stringify(reportData),
-    });
-  }
-
-  async deleteCommunityReport(reportId: number): Promise<ApiResponse<any>> {
-    return this.request(`/community/${reportId}`, {
-      method: 'DELETE',
-    });
-  }
-
-  async assignCommunityReport(reportId: number, assignedTo: number): Promise<ApiResponse<any>> {
-    return this.request(`/community/${reportId}/assign`, {
-      method: 'PUT',
-      body: JSON.stringify({ assigned_to: assignedTo }),
-    });
-  }
-
-  async updateCommunityReportStatus(reportId: number, status: string, resolutionNotes?: string): Promise<ApiResponse<any>> {
-    const data: any = { status };
-    if (resolutionNotes) {
-      data.resolution_notes = resolutionNotes;
-    }
-    return this.request(`/community/${reportId}/status`, {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    });
-  }
-
-  async getCommunityReportsSummary(): Promise<ApiResponse<any>> {
-    return this.request('/community/stats/summary');
   }
 }
 

@@ -46,7 +46,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
   const handleToggle = () => {
     if (!isOpen && buttonRef.current) {
       const rect = buttonRef.current.getBoundingClientRect();
-      const dropdownWidth = 220;
+      const dropdownWidth = 256; // w-64 = 256px
       const dropdownHeight = 200; // approximate height
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
@@ -56,14 +56,15 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
 
       // Ensure dropdown doesn't go off-screen horizontally
       if (left < 8) {
-        left = 8;
-      } else if (left + dropdownWidth > viewportWidth - 8) {
+        left = rect.left; // Position to the right of the button if not enough space on left
+      }
+      if (left + dropdownWidth > viewportWidth - 8) {
         left = viewportWidth - dropdownWidth - 8;
       }
 
       // Ensure dropdown doesn't go off-screen vertically
       if (top + dropdownHeight > viewportHeight - 8) {
-        top = rect.top - dropdownHeight - 8;
+        top = rect.top - dropdownHeight - 8; // Position above if not enough space below
       }
 
       setDropdownPosition({ top, left });
@@ -83,100 +84,75 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
       }
     };
 
-    const updatePosition = () => {
-      if (isOpen && buttonRef.current) {
-        const rect = buttonRef.current.getBoundingClientRect();
-        setDropdownPosition({
-          top: rect.bottom + 8,
-          left: rect.right - 220
-        });
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      window.addEventListener('resize', updatePosition);
-      window.addEventListener('scroll', updatePosition);
-    }
-
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
-      window.removeEventListener('resize', updatePosition);
-      window.removeEventListener('scroll', updatePosition);
     };
-  }, [isOpen]);
+  }, []);
 
   return (
-    <div ref={dropdownRef} className="profile-dropdown-container">
-      <div ref={buttonRef} className="relative inline-block">
+    <div ref={dropdownRef} className="relative inline-block">
+      <div ref={buttonRef}>
         <Button
           variant="ghost"
           size="sm"
-          className="relative h-11 w-11 rounded-full hover:bg-gradient-to-br hover:from-accent hover:to-accent/80 hover:scale-110 hover:shadow-lg transition-all duration-300 cursor-pointer group"
+          className="relative h-11 w-11 rounded-full hover:bg-blue-100 hover:scale-110 hover:shadow-lg transition-all duration-300 cursor-pointer group"
           title="User menu"
           onClick={handleToggle}
         >
-          <Avatar className="h-9 w-9 hover:ring-3 hover:ring-primary/30 transition-all duration-300 group-hover:shadow-md">
+          <Avatar className="h-9 w-9 ring-2 ring-blue-300 transition-all duration-300 group-hover:shadow-md">
             <AvatarImage src={''} alt={user?.username} />
-            <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-primary font-bold text-sm group-hover:from-primary/30 group-hover:to-primary/20 transition-all duration-300">
+            <AvatarFallback className="bg-blue-200 text-blue-800 font-bold text-sm">
               {user?.username?.charAt(0).toUpperCase() || 'U'}
             </AvatarFallback>
           </Avatar>
         </Button>
       </div>
-
       {isOpen && (
         <div
-          className="profile-dropdown-menu open"
+          className="fixed w-64 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl z-50"
           style={{
-            top: `${dropdownPosition.top}px`,
-            left: `${dropdownPosition.left}px`
+            top: `${Math.max(8, Math.min(dropdownPosition.top, window.innerHeight - 208))}px`,
+            left: `${Math.max(8, Math.min(dropdownPosition.left, window.innerWidth - 272))}px`
           }}
         >
-          <div className="profile-dropdown-header">
-            <div className="profile-dropdown-user-info">
-              <p className="profile-dropdown-username">{user?.username}</p>
-              <span className="profile-dropdown-status">
-                {user?.is_active ? 'Active' : 'Inactive'}
-              </span>
+          <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-800">
+            <div className="flex items-center justify-between mb-2">
+              <p className="font-semibold text-gray-900 dark:text-white text-base">{user?.username}</p>
+              <span className={`text-xs px-2 py-1 rounded-full font-semibold ${user?.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>{user?.is_active ? 'Active' : 'Inactive'}</span>
             </div>
-            <p className="profile-dropdown-email">{user?.email}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">{user?.email}</p>
           </div>
-
-          <div className="profile-dropdown-menu-items">
-            <div
+          <div className="py-2">
+            <button
               onClick={() => handleMenuClick(() => onTabChange('profile'))}
-              className="profile-dropdown-menu-item"
+              className="flex items-center w-full px-5 py-3 text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900 transition rounded-lg"
             >
-              <User className="profile-dropdown-menu-item-icon" />
-              <span>Profile</span>
-            </div>
-
-            <div
+              <User className="mr-3 w-5 h-5" />
+              Profile
+            </button>
+            <button
               onClick={() => handleMenuClick(() => onTabChange('settings'))}
-              className="profile-dropdown-menu-item"
+              className="flex items-center w-full px-5 py-3 text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900 transition rounded-lg"
             >
-              <SettingsIcon className="profile-dropdown-menu-item-icon" />
-              <span>Settings</span>
-            </div>
-
-            <div
+              <SettingsIcon className="mr-3 w-5 h-5" />
+              Settings
+            </button>
+            <button
               onClick={() => handleMenuClick(() => onTabChange('community'))}
-              className="profile-dropdown-menu-item"
+              className="flex items-center w-full px-5 py-3 text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900 transition rounded-lg"
             >
-              <Users className="profile-dropdown-menu-item-icon" />
-              <span>Community</span>
-            </div>
-
-            <div className="profile-dropdown-separator"></div>
-
-            <div
+              <Users className="mr-3 w-5 h-5" />
+              Community
+            </button>
+            <hr className="border-t border-gray-100 dark:border-gray-800 my-2" />
+            <button
               onClick={() => handleMenuClick(onLogout)}
-              className="profile-dropdown-menu-item profile-dropdown-menu-item-logout"
+              className="flex items-center w-full px-5 py-3 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 transition rounded-lg font-semibold"
             >
-              <LogOut className="profile-dropdown-menu-item-icon" />
-              <span>Log out</span>
-            </div>
+              <LogOut className="mr-3 w-5 h-5" />
+              Logout
+            </button>
           </div>
         </div>
       )}
