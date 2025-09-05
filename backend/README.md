@@ -140,7 +140,7 @@ Create a `.env` file in the backend directory:
 
 ```env
 # Database Configuration
-DATABASE_URL=mysql+pymysql://root:@localhost/ka-eco
+DATABASE_URL=mysql+pymysql://user:password@ka-eco-ka-eco.d.aivencloud.com:13837/ka-eco
 # For SQLite, use:
 # DATABASE_URL=sqlite:///./wetlands.db
 
@@ -185,7 +185,7 @@ The API will be available at:
 
 | Database | URL Format | Example |
 |----------|------------|---------|
-| MySQL | `mysql+pymysql://user:password@host/db` | `mysql+pymysql://root:@localhost/ka-eco` |
+| MySQL | `mysql+pymysql://user:password@host/db` | `mysql+pymysql://user:password@ka-eco-ka-eco.d.aivencloud.com:13837/ka-eco` |
 | SQLite | `sqlite:///./filename.db` | `sqlite:///./wetlands.db` |
 
 ### Environment Variables
@@ -327,7 +327,7 @@ CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 
 ### Environment Setup for Production
 ```env
-DATABASE_URL=mysql+pymysql://prod_user:secure_password@prod_host/ka-eco
+DATABASE_URL=mysql+pymysql://user:password@ka-eco-ka-eco.d.aivencloud.com:13837/ka-eco
 SECRET_KEY=very-long-random-secret-key-for-production
 CORS_ORIGINS=https://yourdomain.com
 HOST=0.0.0.0

@@ -6,8 +6,8 @@ services:
     startCommand: python main.py
     envVars:
       - key: DATABASE_URL
-        value: sqlite:///./wetlands.db
+        value: mysql+pymysql://user:password@ka-eco-ka-eco.d.aivencloud.com:13837/ka-eco
       - key: SECRET_KEY
         value: your-super-secret-key-change-this-in-production-make-it-long-and-random
       - key: CORS_ORIGINS
-        value: https://your-netlify-site.netlify.app
+        value: https://ka-eco-frontend.netlify.app

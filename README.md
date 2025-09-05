@@ -178,7 +178,7 @@ python seed.py  # Creates wetlands.db automatically
 
 Create `backend/.env`:
 ```env
-DATABASE_URL=mysql+pymysql://root:@localhost/ka-eco
+DATABASE_URL=mysql+pymysql://user:password@ka-eco-ka-eco.d.aivencloud.com:13837/ka-eco
 # Or for SQLite:
 # DATABASE_URL=sqlite:///./wetlands.db
 
