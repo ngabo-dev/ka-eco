@@ -8,6 +8,6 @@ services:
       - key: DATABASE_URL
         value: mysql+pymysql://user:password@ka-eco-ka-eco.d.aivencloud.com:13837/ka-eco
       - key: SECRET_KEY
-        value: your-super-secret-key-change-this-in-production-make-it-long-and-random
+        value: your-production-secret-key-change-this-in-render-dashboard
       - key: CORS_ORIGINS
-        value: https://ka-eco-frontend.netlify.app
+        value: https://ka-eco.netlify.app
