@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv(dotenv_path="../../.env.development")
 
 # Database configuration - MySQL (Aiven Cloud)
-SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL")
+SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL", "mysql+pymysql://avnadmin:AVNS_WITWvsvc9gFo-mvSuAB@ka-eco-ka-eco.d.aivencloud.com:13837/ka-eco")
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL,
     echo=False,  # Set to True for development debugging
