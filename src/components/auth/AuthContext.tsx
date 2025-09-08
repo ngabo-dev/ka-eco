@@ -158,7 +158,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           setUser(userResponse.data);
           localStorage.setItem('user_data', JSON.stringify(userResponse.data));
           resetSessionTimeout(); // Start session timeout
-          
           // Show personalized success message
           const welcomeMessage = message || `Welcome back, ${userResponse.data.full_name || userResponse.data.username}!`;
           toast.success(welcomeMessage);
