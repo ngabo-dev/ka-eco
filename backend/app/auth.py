@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from . import schemas
 import secrets
 
-pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
+pwd_context = CryptContext(schemes=["bcrypt", "pbkdf2_sha256"], deprecated="auto")
 
 SECRET_KEY = "073e28f7ca37be3c273a3da956eca77a4944b94f245460ebfa86238507a31681"
 REFRESH_SECRET_KEY = "073e28f7ca37be3c273a3da956eca77a4944b94f245460ebfa86238507a31681"
