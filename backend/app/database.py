@@ -2,9 +2,12 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import os
+from dotenv import load_dotenv
+
+load_dotenv(dotenv_path="../../.env.development")
 
 # Database configuration - MySQL (Aiven Cloud)
-SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL", "mysql+pymysql://user:password@ka-eco-ka-eco.d.aivencloud.com:13837/ka-eco")
+SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL")
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL,
     echo=False,  # Set to True for development debugging
