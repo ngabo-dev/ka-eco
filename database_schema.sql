@@ -86,7 +86,7 @@ CREATE TABLE IF NOT EXISTS `sensor_data` (
 
 -- Insert default admin user
 INSERT IGNORE INTO `users` (`id`, `username`, `email`, `hashed_password`, `is_active`, `role`, `full_name`, `organization`, `created_at`) VALUES
-(1, 'admin', 'admin@ka-eco.rw', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LeCtBkO2tJcVyO8m', 1, 'admin', 'System Administrator', 'Ka-Eco Organization', CURRENT_TIMESTAMP);
+(1, 'admin', 'admin@ka-eco.rw', '$pbkdf2-sha256$29000$XMvZ.z8nJERIiZHSuhcixA$3hUpJO1iVPgQifknUPrc4ot.pQncAzqtsobjrtxIoag', 1, 'admin', 'System Administrator', 'Ka-Eco Organization', CURRENT_TIMESTAMP);
 
 -- Insert sample wetlands
 INSERT IGNORE INTO `wetlands` (`id`, `name`, `location`, `size`, `type`, `description`, `created_at`) VALUES
