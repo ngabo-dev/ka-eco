@@ -6,8 +6,8 @@ import secrets
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-SECRET_KEY = "your-secret-key-change-in-production"  # In production, use environment variable
-REFRESH_SECRET_KEY = "your-refresh-secret-key-change-in-production"
+SECRET_KEY = "073e28f7ca37be3c273a3da956eca77a4944b94f245460ebfa86238507a31681"
+REFRESH_SECRET_KEY = "073e28f7ca37be3c273a3da956eca77a4944b94f245460ebfa86238507a31681"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 15  # Short-lived access tokens
 REFRESH_TOKEN_EXPIRE_DAYS = 7     # Long-lived refresh tokens
