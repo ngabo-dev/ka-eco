@@ -218,8 +218,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       setLoading(true);
 
-      // Make direct fetch call for profile update
-      const url = 'http://localhost:8000/auth/users/me';
+      // Use the correct API base URL from environment
+      const API_BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL || 'http://localhost:8000';
+      const url = `${API_BASE_URL}/auth/users/me`;
       const response = await fetch(url, {
         method: 'PUT',
         headers: {
