@@ -219,7 +219,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setLoading(true);
 
       // Use the correct API base URL from environment
-      const API_BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL || 'http://localhost:8000';
+      const API_BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL || 'https://ka-eco.onrender.com';
       const url = `${API_BASE_URL}/auth/users/me`;
       const response = await fetch(url, {
         method: 'PUT',

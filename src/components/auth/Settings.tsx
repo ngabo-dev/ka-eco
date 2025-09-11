@@ -151,7 +151,8 @@ export const Settings: React.FC = () => {
 
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:8000/auth/change-password', {
+      const API_BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL || 'https://ka-eco.onrender.com';
+      const response = await fetch(`${API_BASE_URL}/auth/change-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -175,7 +175,8 @@ export const CommunityReporting: React.FC = () => {
       });
 
       // Use fetch directly for multipart form data
-      const response = await fetch('http://localhost:8000/community/', {
+      const API_BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL || 'https://ka-eco.onrender.com';
+      const response = await fetch(`${API_BASE_URL}/community/`, {
         method: 'POST',
         body: formDataToSend,
       });
