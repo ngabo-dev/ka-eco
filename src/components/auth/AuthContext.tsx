@@ -168,7 +168,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Login failed';
-      toast.error(errorMessage);
+
+      // Provide more specific error messages
+      let displayMessage = errorMessage;
+      if (errorMessage.toLowerCase().includes('invalid') || errorMessage.toLowerCase().includes('unauthorized') || errorMessage.toLowerCase().includes('wrong')) {
+        displayMessage = 'Incorrect username or password.';
+      } else if (errorMessage.toLowerCase().includes('network') || errorMessage.toLowerCase().includes('fetch')) {
+        displayMessage = 'Network error. Please check your connection and try again.';
+      }
+
+      toast.error(displayMessage);
       throw error;
     } finally {
       setLoading(false);
@@ -193,17 +202,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
 
       if (response.data) {
-        // Show success message from backend
-        const message = response.data.message || 'Account created successfully! You can now log in.';
+        // Show success message and redirect to login
+        const message = response.data.message || 'Account created successfully! Please log in to continue.';
         toast.success(message);
-        
-        // Auto-login after successful registration
-        try {
-          await login(username, password);
-        } catch (loginError) {
-          // If auto-login fails, at least show that registration was successful
-          toast.info('Registration successful! Please log in with your credentials.');
-        }
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Registration failed';

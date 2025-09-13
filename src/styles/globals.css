@@ -131,6 +131,214 @@
     /* stylelint-disable-next-line at-rule-no-unknown */
     @apply bg-background text-foreground;
   }
+
+  /* Ensure all text elements are visible in dark mode */
+  .dark * {
+    color: hsl(var(--foreground));
+  }
+
+  .dark input,
+  .dark textarea,
+  .dark select {
+    background-color: hsl(var(--background));
+    border-color: hsl(var(--border));
+    color: hsl(var(--foreground));
+  }
+
+  .dark input::placeholder,
+  .dark textarea::placeholder {
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* Ensure buttons are visible */
+  .dark button {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    border-color: hsl(var(--border));
+  }
+
+  .dark button:hover {
+    background-color: hsl(var(--accent));
+  }
+
+  /* Ensure cards and containers are visible */
+  .dark .card,
+  .dark .bg-card {
+    background-color: hsl(var(--card));
+    border-color: hsl(var(--border));
+  }
+
+  /* Ensure navigation elements are visible */
+  .dark nav {
+    background-color: hsl(var(--background));
+    border-color: hsl(var(--border));
+  }
+
+  /* Ensure modal and dialog backgrounds are visible */
+  .dark [role="dialog"],
+  .dark .modal,
+  .dark .dialog {
+    background-color: hsl(var(--background));
+    border-color: hsl(var(--border));
+  }
+
+  /* Fix backdrop-filter prefix order */
+  .profile-dropdown-menu {
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+
+  /* Mobile menu button styles */
+  .mobile-menu-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0.5rem 0.75rem;
+    background-color: transparent;
+    border: 0;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .mobile-menu-button:hover {
+    background-color: hsl(var(--accent));
+  }
+
+  /* Mobile navigation item styles */
+  .mobile-nav-item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    min-height: 44px;
+    padding: 0.75rem 1rem;
+    text-align: left;
+    transition: background-color 0.15s ease;
+    touch-action: manipulation;
+    border: 0;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .mobile-nav-item:hover {
+    background-color: hsl(var(--accent));
+  }
+
+  .mobile-nav-item.active {
+    background-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+  }
+
+  /* Loading spinner styles */
+  .loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid hsl(var(--primary));
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  /* Specific overrides for shadcn/ui components */
+  .dark .bg-background {
+    background-color: hsl(var(--background));
+  }
+
+  .dark .text-foreground {
+    color: hsl(var(--foreground));
+  }
+
+  .dark .text-muted-foreground {
+    color: hsl(var(--muted-foreground));
+  }
+
+  .dark .border-border {
+    border-color: hsl(var(--border));
+  }
+
+  .dark .bg-card {
+    background-color: hsl(var(--card));
+  }
+
+  .dark .text-card-foreground {
+    color: hsl(var(--card-foreground));
+  }
+
+  .dark .bg-popover {
+    background-color: hsl(var(--popover));
+  }
+
+  .dark .text-popover-foreground {
+    color: hsl(var(--popover-foreground));
+  }
+
+  .dark .bg-accent {
+    background-color: hsl(var(--accent));
+  }
+
+  .dark .text-accent-foreground {
+    color: hsl(var(--accent-foreground));
+  }
+
+  .dark .bg-primary {
+    background-color: hsl(var(--primary));
+  }
+
+  .dark .text-primary-foreground {
+    color: hsl(var(--primary-foreground));
+  }
+
+  .dark .bg-secondary {
+    background-color: hsl(var(--secondary));
+  }
+
+  .dark .text-secondary-foreground {
+    color: hsl(var(--secondary-foreground));
+  }
+
+  .dark .bg-muted {
+    background-color: hsl(var(--muted));
+  }
+
+  .dark .text-muted-foreground {
+    color: hsl(var(--muted-foreground));
+  }
+
+  .dark .bg-destructive {
+    background-color: hsl(var(--destructive));
+  }
+
+  .dark .text-destructive-foreground {
+    color: hsl(var(--destructive-foreground));
+  }
+
+  /* Ensure focus states are visible */
+  .dark *:focus {
+    outline-color: hsl(var(--ring));
+  }
+
+  /* Ensure hover states work properly */
+  .dark *:hover {
+    background-color: hsl(var(--accent));
+  }
 }
 
 /**

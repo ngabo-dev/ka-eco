@@ -22,15 +22,15 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onToggleMode }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    
+
     // Client-side validation
     if (!username.trim()) {
-      setError('Username is required');
+      setError('Please enter your username.');
       return;
     }
 
-    if (!password) {
-      setError('Password is required');
+    if (!password.trim()) {
+      setError('Please enter your password.');
       return;
     }
 
@@ -39,7 +39,16 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onToggleMode }) => {
     try {
       await login(username.trim(), password);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed');
+      const errorMessage = err instanceof Error ? err.message : 'Login failed';
+
+      // Provide more specific error messages
+      if (errorMessage.toLowerCase().includes('invalid') || errorMessage.toLowerCase().includes('wrong')) {
+        setError('Incorrect username or password.');
+      } else if (errorMessage.toLowerCase().includes('network') || errorMessage.toLowerCase().includes('fetch')) {
+        setError('Network error. Please check your connection and try again.');
+      } else {
+        setError(errorMessage);
+      }
     } finally {
       setLoading(false);
     }

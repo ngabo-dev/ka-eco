@@ -33,30 +33,40 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onToggleMode }) => {
     setSuccess('');
 
     // Client-side validation
-    if (password !== confirmPassword) {
-      setError('Passwords do not match');
-      return;
-    }
-
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters long');
-      return;
-    }
-
     if (!username.trim()) {
-      setError('Username is required');
+      setError('Please enter a username.');
       return;
     }
 
     if (!email.trim()) {
-      setError('Email is required');
+      setError('Please enter your email.');
       return;
     }
 
     // Email format validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      setError('Please enter a valid email address');
+      setError('Please enter a valid email address.');
+      return;
+    }
+
+    if (!password.trim()) {
+      setError('Please create a password.');
+      return;
+    }
+
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters long.');
+      return;
+    }
+
+    if (!confirmPassword.trim()) {
+      setError('Please confirm your password.');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match.');
       return;
     }
 

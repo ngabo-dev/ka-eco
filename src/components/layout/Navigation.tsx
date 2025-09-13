@@ -110,7 +110,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
       </div>
       {isOpen && (
         <div
-          className="fixed w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl shadow-2xl z-50"
+          className="profile-dropdown-menu"
           style={{
             top: `${Math.max(8, Math.min(dropdownPosition.top, window.innerHeight - 208))}px`,
             left: `${Math.max(8, Math.min(dropdownPosition.left, window.innerWidth - 272))}px`
@@ -191,9 +191,7 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange, darkMod
       <div className="flex items-center justify-between">
         {/* Mobile Menu Button */}
         <div className="md:hidden">
-          <Button
-            variant="ghost"
-            size="sm"
+          <button
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -202,15 +200,16 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange, darkMod
             }}
             onTouchStart={(e) => {
               e.preventDefault();
+              e.stopPropagation();
               console.log('Mobile menu touch start');
               setMobileMenuOpen(!mobileMenuOpen);
             }}
-            className="flex items-center space-x-2 min-h-[44px] min-w-[44px] touch-manipulation"
-            style={{ touchAction: 'manipulation' }}
+            className="mobile-menu-button"
+            aria-label="Toggle mobile menu"
           >
-            <Menu className="size-5" />
-            <span className="text-sm font-medium">Menu</span>
-          </Button>
+            <Menu className="size-5 text-foreground" />
+            <span className="text-sm font-medium text-foreground">Menu</span>
+          </button>
         </div>
 
         {/* Navigation Links - Desktop */}
@@ -285,11 +284,10 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange, darkMod
               <div className="flex flex-col space-y-2">
                 {navigationItems.map((item) => {
                   const Icon = item.icon;
+                  const isActive = activeTab === item.id;
                   return (
-                    <Button
+                    <button
                       key={item.id}
-                      variant={activeTab === item.id ? 'default' : 'ghost'}
-                      size="sm"
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
@@ -298,15 +296,16 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange, darkMod
                       }}
                       onTouchStart={(e) => {
                         e.preventDefault();
+                        e.stopPropagation();
                         console.log(`Mobile nav touch start: ${item.id}`);
                         handleMobileNavClick(item.id);
                       }}
-                      className="flex items-center space-x-2 justify-start w-full min-h-[44px] touch-manipulation"
-                      style={{ touchAction: 'manipulation' }}
+                      className={`mobile-nav-item ${isActive ? 'active' : ''}`}
+                      aria-label={`Navigate to ${item.label}`}
                     >
-                      <Icon className="size-5" />
+                      <Icon className="size-5 flex-shrink-0" />
                       <span className="text-sm font-medium">{item.label}</span>
-                    </Button>
+                    </button>
                   );
                 })}
               </div>
