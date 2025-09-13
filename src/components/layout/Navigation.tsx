@@ -193,14 +193,11 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange, darkMod
         <div className="md:hidden">
           <button
             onClick={(e) => {
-              e.preventDefault();
               e.stopPropagation();
               console.log('Mobile menu button clicked');
               setMobileMenuOpen(!mobileMenuOpen);
             }}
             onTouchStart={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
               console.log('Mobile menu touch start');
               setMobileMenuOpen(!mobileMenuOpen);
             }}
@@ -266,12 +263,10 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange, darkMod
           <div
             className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
             onClick={(e) => {
-              e.preventDefault();
               console.log('Backdrop clicked');
               setMobileMenuOpen(false);
             }}
             onTouchStart={(e) => {
-              e.preventDefault();
               console.log('Backdrop touch start');
               setMobileMenuOpen(false);
             }}
@@ -289,14 +284,11 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange, darkMod
                     <button
                       key={item.id}
                       onClick={(e) => {
-                        e.preventDefault();
                         e.stopPropagation();
                         console.log(`Mobile nav clicked: ${item.id}`);
                         handleMobileNavClick(item.id);
                       }}
                       onTouchStart={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
                         console.log(`Mobile nav touch start: ${item.id}`);
                         handleMobileNavClick(item.id);
                       }}
