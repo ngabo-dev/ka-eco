@@ -162,6 +162,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
 
 const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange, darkMode, onToggleDarkMode }) => {
   const { user, logout } = useAuth();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navigationItems = [
     { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
@@ -174,10 +175,28 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange, darkMod
     logout();
   };
 
+  const handleMobileNavClick = (tabId: string) => {
+    onTabChange(tabId);
+    setMobileMenuOpen(false);
+  };
+
   return (
     <nav className="bg-background border-b border-border px-4 py-3">
       <div className="flex items-center justify-between">
-        {/* Navigation Links */}
+        {/* Mobile Menu Button */}
+        <div className="md:hidden">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="flex items-center space-x-2"
+          >
+            <Menu className="size-4" />
+            <span>Menu</span>
+          </Button>
+        </div>
+
+        {/* Navigation Links - Desktop */}
         <div className="hidden md:flex items-center space-x-1">
           {navigationItems.map((item) => {
             const Icon = item.icon;
@@ -222,6 +241,29 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange, darkMod
           />
         </div>
       </div>
+
+      {/* Mobile Navigation Menu */}
+      {mobileMenuOpen && (
+        <div className="md:hidden mt-3 pt-3 border-t border-border">
+          <div className="flex flex-col space-y-2">
+            {navigationItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <Button
+                  key={item.id}
+                  variant={activeTab === item.id ? 'default' : 'ghost'}
+                  size="sm"
+                  onClick={() => handleMobileNavClick(item.id)}
+                  className="flex items-center space-x-2 justify-start w-full"
+                >
+                  <Icon className="size-4" />
+                  <span>{item.label}</span>
+                </Button>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </nav>
   );
 };

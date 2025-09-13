@@ -58,19 +58,19 @@ export default function App() {
 
   return (
     <AuthProvider>
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-white dark:bg-gray-900">
         <AuthGuard>
-          <Navigation 
-            activeTab={activeTab} 
+          <Navigation
+            activeTab={activeTab}
             onTabChange={setActiveTab}
             darkMode={darkMode}
             onToggleDarkMode={toggleDarkMode}
           />
-          
+
           <main className="container mx-auto px-4 py-8">
             {renderContent()}
           </main>
-          
+
           <Toaster />
         </AuthGuard>
       </div>
