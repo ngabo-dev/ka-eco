@@ -38,9 +38,12 @@ origins = [
     "http://localhost:3000",  # React dev server
     "http://localhost:3001",  # React dev server (alternative port)
     "http://localhost:5173",  # Vite dev server
+    "http://localhost:44765", # Production build served locally
     "http://127.0.0.1:3000",
     "http://127.0.0.1:3001",
     "http://127.0.0.1:5173",
+    "http://127.0.0.1:44765", # Production build served locally
+    "https://ka-eco.onrender.com",  # Production frontend (if different domain)
 ]
 
 app.add_middleware(
