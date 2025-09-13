@@ -194,11 +194,22 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange, darkMod
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="flex items-center space-x-2"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              console.log('Mobile menu button clicked');
+              setMobileMenuOpen(!mobileMenuOpen);
+            }}
+            onTouchStart={(e) => {
+              e.preventDefault();
+              console.log('Mobile menu touch start');
+              setMobileMenuOpen(!mobileMenuOpen);
+            }}
+            className="flex items-center space-x-2 min-h-[44px] min-w-[44px] touch-manipulation"
+            style={{ touchAction: 'manipulation' }}
           >
-            <Menu className="size-4" />
-            <span>Menu</span>
+            <Menu className="size-5" />
+            <span className="text-sm font-medium">Menu</span>
           </Button>
         </div>
 
@@ -255,7 +266,17 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange, darkMod
           {/* Backdrop */}
           <div
             className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
-            onClick={() => setMobileMenuOpen(false)}
+            onClick={(e) => {
+              e.preventDefault();
+              console.log('Backdrop clicked');
+              setMobileMenuOpen(false);
+            }}
+            onTouchStart={(e) => {
+              e.preventDefault();
+              console.log('Backdrop touch start');
+              setMobileMenuOpen(false);
+            }}
+            style={{ touchAction: 'manipulation' }}
           />
 
           {/* Mobile Menu */}
@@ -269,11 +290,22 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange, darkMod
                       key={item.id}
                       variant={activeTab === item.id ? 'default' : 'ghost'}
                       size="sm"
-                      onClick={() => handleMobileNavClick(item.id)}
-                      className="flex items-center space-x-2 justify-start w-full"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log(`Mobile nav clicked: ${item.id}`);
+                        handleMobileNavClick(item.id);
+                      }}
+                      onTouchStart={(e) => {
+                        e.preventDefault();
+                        console.log(`Mobile nav touch start: ${item.id}`);
+                        handleMobileNavClick(item.id);
+                      }}
+                      className="flex items-center space-x-2 justify-start w-full min-h-[44px] touch-manipulation"
+                      style={{ touchAction: 'manipulation' }}
                     >
-                      <Icon className="size-4" />
-                      <span>{item.label}</span>
+                      <Icon className="size-5" />
+                      <span className="text-sm font-medium">{item.label}</span>
                     </Button>
                   );
                 })}
