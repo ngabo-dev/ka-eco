@@ -34,17 +34,9 @@ class ConnectionManager:
 manager = ConnectionManager()
 
 # CORS middleware
-origins = [
-    "http://localhost:3000",  # React dev server
-    "http://localhost:3001",  # React dev server (alternative port)
-    "http://localhost:5173",  # Vite dev server
-    "http://localhost:44765", # Production build served locally
-    "http://127.0.0.1:3000",
-    "http://127.0.0.1:3001",
-    "http://127.0.0.1:5173",
-    "http://127.0.0.1:44765", # Production build served locally
-    "https://ka-eco.onrender.com",  # Production frontend (if different domain)
-]
+import os
+cors_origins = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost:5173,http://localhost:44765")
+origins = [origin.strip() for origin in cors_origins.split(",")]
 
 app.add_middleware(
     CORSMiddleware,

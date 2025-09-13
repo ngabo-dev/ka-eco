@@ -6,8 +6,8 @@ services:
     startCommand: python main.py
     envVars:
       - key: DATABASE_URL
-        value: mysql+pymysql://user:password@ka-eco-ka-eco.d.aivencloud.com:13837/ka-eco
+        value: mysql+pymysql://avnadmin:AVNS_WITWvsvc9gFo-mvSuAB@ka-eco-ka-eco.d.aivencloud.com:13837/ka-eco
       - key: SECRET_KEY
         value: your-production-secret-key-change-this-in-render-dashboard
       - key: CORS_ORIGINS
-        value: https://ka-eco.netlify.app
+        value: https://ka-eco.netlify.app,http://localhost:3000,http://localhost:5173,http://localhost:44765
