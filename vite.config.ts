@@ -52,6 +52,30 @@
     build: {
       target: 'esnext',
       outDir: 'build',
+      // Performance optimizations
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            // Split vendor chunks for better caching
+            vendor: ['react', 'react-dom'],
+            ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-select'],
+            charts: ['recharts'],
+            utils: ['lucide-react', 'clsx', 'tailwind-merge'],
+          },
+        },
+      },
+      // Reduce bundle size
+      minify: 'terser',
+      terserOptions: {
+        compress: {
+          drop_console: true,
+          drop_debugger: true,
+        },
+      },
+      // Enable source maps for production debugging
+      sourcemap: false,
+      // Increase chunk size warning limit
+      chunkSizeWarningLimit: 1000,
     },
     server: {
       port: 3000,
