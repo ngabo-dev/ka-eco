@@ -201,7 +201,14 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange, darkMod
               console.log('Mobile menu touch start');
               setMobileMenuOpen(!mobileMenuOpen);
             }}
-            className="mobile-menu-button"
+            className="flex items-center space-x-2 min-h-[44px] min-w-[44px] px-3 py-2 bg-transparent hover:bg-accent rounded-md transition-colors touch-manipulation border-0 cursor-pointer"
+            style={{
+              touchAction: 'manipulation',
+              WebkitTapHighlightColor: 'transparent',
+              WebkitTouchCallout: 'none',
+              WebkitUserSelect: 'none',
+              userSelect: 'none'
+            }}
             aria-label="Toggle mobile menu"
           >
             <Menu className="size-5 text-foreground" />
@@ -292,7 +299,18 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange, darkMod
                         console.log(`Mobile nav touch start: ${item.id}`);
                         handleMobileNavClick(item.id);
                       }}
-                      className={`mobile-nav-item ${isActive ? 'active' : ''}`}
+                      className={`flex items-center space-x-2 justify-start w-full min-h-[44px] px-4 py-3 text-left transition-colors touch-manipulation border-0 cursor-pointer rounded-lg ${
+                        isActive
+                          ? 'bg-primary text-primary-foreground'
+                          : 'text-foreground hover:bg-accent'
+                      }`}
+                      style={{
+                        touchAction: 'manipulation',
+                        WebkitTapHighlightColor: 'transparent',
+                        WebkitTouchCallout: 'none',
+                        WebkitUserSelect: 'none',
+                        userSelect: 'none'
+                      }}
                       aria-label={`Navigate to ${item.label}`}
                     >
                       <Icon className="size-5 flex-shrink-0" />
