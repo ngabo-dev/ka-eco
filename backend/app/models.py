@@ -10,16 +10,23 @@ class User(Base):
     username = Column(String, unique=True, index=True)
     email = Column(String, unique=True, index=True)
     hashed_password = Column(String)
-    is_active = Column(Integer, default=1)
+    is_active = Column(Integer, default=1)  # Users are active by default now
     role = Column(String, default="researcher")  # admin, researcher, government_official, community_member
     full_name = Column(String, nullable=True)
     organization = Column(String, nullable=True)
     phone = Column(String, nullable=True)
+    # User Approval Workflow Fields (now enabled)
+    approval_status = Column(String, default="approved", nullable=True)  # pending, approved, rejected
+    approved_by = Column(Integer, ForeignKey("users.id"), nullable=True)
+    approved_at = Column(DateTime, nullable=True)
+    rejection_reason = Column(Text, nullable=True)
+    # Timestamps
     created_at = Column(DateTime, default=datetime.utcnow)
     last_login = Column(DateTime, nullable=True)
     password_changed_at = Column(DateTime, nullable=True)
 
     settings = relationship("UserSettings", back_populates="user")
+    approver = relationship("User", remote_side=[id])
 
 class Wetland(Base):
     __tablename__ = "wetlands"

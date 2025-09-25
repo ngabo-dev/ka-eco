@@ -73,7 +73,12 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     
     # Check if user is active
     if not user.is_active:
-        raise HTTPException(status_code=400, detail="Account is deactivated. Please contact support.")
+        if user.approval_status == "pending":
+            raise HTTPException(status_code=400, detail="Your account is pending approval by an administrator. Please wait for approval.")
+        elif user.approval_status == "rejected":
+            raise HTTPException(status_code=400, detail="Your account has been rejected. Please contact support for more information.")
+        else:
+            raise HTTPException(status_code=400, detail="Account is deactivated. Please contact support.")
     
     # Verify password
     if not verify_password(form_data.password, user.hashed_password):
@@ -342,3 +347,85 @@ def reset_password(reset_data: schemas.PasswordReset, db: Session = Depends(get_
     db.commit()
 
     return {"message": "Password reset successfully"}
+
+# USER APPROVAL WORKFLOW ENDPOINTS
+
+@router.get("/users/pending", response_model=list[schemas.User])
+def get_pending_users(current_user: schemas.User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Get all users pending approval (admin only)"""
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not authorized to view pending users")
+
+    pending_users = db.query(models.User).filter(
+        models.User.approval_status == "pending"
+    ).order_by(models.User.created_at.desc()).all()
+
+    return pending_users
+
+@router.post("/users/{user_id}/approve")
+def approve_user(user_id: int, current_user: schemas.User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Approve a pending user (admin only)"""
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not authorized to approve users")
+
+    user = db.query(models.User).filter(models.User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    if user.approval_status != "pending":
+        raise HTTPException(status_code=400, detail="User is not pending approval")
+
+    # Approve the user
+    user.approval_status = "approved"
+    user.is_active = 1
+    user.approved_by = current_user.id
+    user.approved_at = datetime.utcnow()
+    
+    db.commit()
+
+    # TODO: Send approval email notification to user
+    
+    return {"message": f"User {user.username} approved successfully"}
+
+@router.post("/users/{user_id}/reject")
+def reject_user(user_id: int, rejection_data: schemas.UserRejection, current_user: schemas.User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Reject a pending user (admin only)"""
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not authorized to reject users")
+
+    user = db.query(models.User).filter(models.User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    if user.approval_status != "pending":
+        raise HTTPException(status_code=400, detail="User is not pending approval")
+
+    # Reject the user
+    user.approval_status = "rejected"
+    user.is_active = 0
+    user.approved_by = current_user.id
+    user.approved_at = datetime.utcnow()
+    user.rejection_reason = rejection_data.reason
+    
+    db.commit()
+
+    # TODO: Send rejection email notification to user
+    
+    return {"message": f"User {user.username} rejected successfully"}
+
+@router.get("/users/approval-stats")
+def get_approval_stats(current_user: schemas.User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Get user approval statistics (admin only)"""
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not authorized to view approval statistics")
+
+    pending_count = db.query(models.User).filter(models.User.approval_status == "pending").count()
+    approved_count = db.query(models.User).filter(models.User.approval_status == "approved").count()
+    rejected_count = db.query(models.User).filter(models.User.approval_status == "rejected").count()
+    
+    return {
+        "pending": pending_count,
+        "approved": approved_count,
+        "rejected": rejected_count,
+        "total_requests": pending_count + approved_count + rejected_count
+    }

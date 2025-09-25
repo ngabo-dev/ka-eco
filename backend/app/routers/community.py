@@ -260,8 +260,9 @@ def get_community_reports_summary(
     investigating_reports = db.query(models.CommunityReport).filter(models.CommunityReport.status == 'investigating').count()
     resolved_reports = db.query(models.CommunityReport).filter(models.CommunityReport.status == 'resolved').count()
 
-    # Recent reports (last 30 days)
-    thirty_days_ago = datetime.utcnow().replace(day=datetime.utcnow().day - 30)
+    # Recent reports (last 30 days) - Fixed date calculation
+    from datetime import timedelta
+    thirty_days_ago = datetime.utcnow() - timedelta(days=30)
     recent_reports = db.query(models.CommunityReport).filter(
         models.CommunityReport.created_at >= thirty_days_ago
     ).count()

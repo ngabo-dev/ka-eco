@@ -244,6 +244,58 @@ class ApiService {
     return this.request(`/auth/users?${params.toString()}`);
   }
 
+  async createUser(userData: {
+    username: string;
+    email: string;
+    password: string;
+    role: string;
+    full_name?: string;
+    organization?: string;
+    phone?: string;
+    is_active?: boolean;
+  }): Promise<ApiResponse<any>> {
+    return this.register(userData);
+  }
+
+  async updateUser(userId: number, userData: any): Promise<ApiResponse<any>> {
+    return this.request(`/auth/users/${userId}`, {
+      method: 'PUT',
+      body: JSON.stringify(userData),
+    });
+  }
+
+  async deleteUser(userId: number): Promise<ApiResponse<any>> {
+    return this.request(`/auth/users/${userId}`, {
+      method: 'DELETE',
+    });
+  }
+
+  async getUserStats(): Promise<ApiResponse<any>> {
+    return this.getUsersStats();
+  }
+
+  // User Approval Workflow Methods
+  async getPendingUsers(): Promise<ApiResponse<any[]>> {
+    return this.request('/auth/users/pending');
+  }
+
+  async getApprovalStats(): Promise<ApiResponse<any>> {
+    return this.request('/auth/users/approval-stats');
+  }
+
+  async approveUser(userId: number): Promise<ApiResponse<any>> {
+    return this.request(`/auth/users/${userId}/approve`, {
+      method: 'POST',
+    });
+  }
+
+  async rejectUser(userId: number, reason: string): Promise<ApiResponse<any>> {
+    return this.request(`/auth/users/${userId}/reject`, {
+      method: 'POST',
+      body: JSON.stringify({ reason }),
+    });
+  }
+
   // Wetlands endpoints
   async getWetlands(skip?: number, limit?: number): Promise<ApiResponse<any[]>> {
     const params = new URLSearchParams();

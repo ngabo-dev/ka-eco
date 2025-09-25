@@ -4,6 +4,12 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Badge } from '../ui/badge';
 import { useAuth } from '../auth/AuthContext';
 import {
+  hasPermission,
+  canAccessSection,
+  getUserCapabilities,
+  UserRole,
+} from '../../utils/permissions';
+import {
   BarChart3,
   MapPin,
   Settings as SettingsIcon,
@@ -13,7 +19,13 @@ import {
   Droplets,
   Menu,
   Sun,
-  Moon
+  Moon,
+  Shield,
+  Activity,
+  Bell,
+  Eye,
+  FileText,
+  Zap,
 } from 'lucide-react';
 
 interface NavigationProps {
@@ -170,12 +182,60 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange, darkMod
   const { user, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const navigationItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
-    { id: 'wetlands', label: 'Wetlands', icon: Droplets },
-    { id: 'community', label: 'Community', icon: Users },
-    { id: 'settings', label: 'Settings', icon: SettingsIcon },
-  ];
+  const userRole = user?.role as UserRole;
+  const capabilities = getUserCapabilities(userRole);
+
+  // Define role-based navigation items
+  const getNavigationItems = () => {
+    const baseItems = [
+      { id: 'dashboard', label: 'Dashboard', icon: BarChart3, available: true },
+    ];
+
+    // Admin-specific items
+    if (capabilities.canManageUsers) {
+      baseItems.push({ id: 'users', label: 'Users', icon: Users, available: true });
+    }
+
+    // Environmental monitoring items (available to most roles)
+    if (hasPermission(userRole, 'read', 'wetlands')) {
+      baseItems.push({ id: 'wetlands', label: 'Wetlands', icon: Droplets, available: true });
+    }
+
+    if (hasPermission(userRole, 'read', 'sensors')) {
+      baseItems.push({ id: 'sensors', label: 'Sensors', icon: Zap, available: true });
+    }
+
+    if (hasPermission(userRole, 'read', 'observations')) {
+      baseItems.push({ id: 'observations', label: 'Observations', icon: Eye, available: true });
+    }
+
+    // Analytics (for researchers and officials)
+    if (hasPermission(userRole, 'read', 'analytics')) {
+      baseItems.push({ id: 'analytics', label: 'Analytics', icon: BarChart3, available: true });
+    }
+
+    // Community features
+    if (hasPermission(userRole, 'read', 'community_reports') || userRole === 'community_member') {
+      baseItems.push({ id: 'community', label: 'Community', icon: Users, available: true });
+    }
+
+    // Alerts
+    if (hasPermission(userRole, 'read', 'alerts')) {
+      baseItems.push({ id: 'alerts', label: 'Alerts', icon: Bell, available: true });
+    }
+
+    // System management (admin only)
+    if (capabilities.canManageSystem) {
+      baseItems.push({ id: 'system', label: 'System', icon: Shield, available: true });
+    }
+
+    // Settings (always available)
+    baseItems.push({ id: 'settings', label: 'Settings', icon: SettingsIcon, available: true });
+
+    return baseItems.filter(item => item.available);
+  };
+
+  const navigationItems = getNavigationItems();
 
   const handleLogout = () => {
     logout();

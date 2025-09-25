@@ -17,6 +17,10 @@ class UserCreate(UserBase):
 class User(UserBase):
     id: int
     is_active: bool
+    approval_status: Optional[str] = "pending"
+    approved_by: Optional[int] = None
+    approved_at: Optional[datetime] = None
+    rejection_reason: Optional[str] = None
     created_at: datetime
     last_login: Optional[datetime] = None
 
@@ -28,6 +32,9 @@ class UserUpdate(BaseModel):
     organization: Optional[str] = None
     phone: Optional[str] = None
     role: Optional[str] = None
+
+class UserRejection(BaseModel):
+    reason: str
 
 # Wetland schemas
 class WetlandBase(BaseModel):

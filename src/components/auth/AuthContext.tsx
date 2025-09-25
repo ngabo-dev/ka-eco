@@ -203,7 +203,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       if (response.data) {
         // Show success message and redirect to login
-        const message = response.data.message || 'Account created successfully! Please log in to continue.';
+        const message = response.data.message || 'Registration successful! Your account is pending admin approval. You will be notified once approved.';
         toast.success(message);
       }
     } catch (error) {
